@@ -4,8 +4,19 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, View, Text, Image, ImageBackground, Dimensions, AppState, SafeAreaView } from 'react-native';
-import codePush from 'react-native-code-push';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ImageBackground,
+  Dimensions,
+  AppState,
+  SafeAreaView,
+  Alert,
+} from 'react-native';
+import CodePush from 'react-native-code-push';
+import CodePushService from './src/services/codepush.service';
 const bgImage = require('./assets/background.png');
 const img1 = require('./assets/img-1.png');
 const img2 = require('./assets/img-2.png');
@@ -28,78 +39,32 @@ const Card = ({img, title, desc, price}) => {
 };
 
 const App = () => {
-  const [codePushProgress, setCodePushProgress] = useState(0);
-
-  const checkAndInstallCodePush = async () => {
-    try {
-      const syncStatus = await codePush.checkForUpdate();
-
-      if (syncStatus) {
-        codePush.sync(
-          {installMode: codePush.InstallMode.IMMEDIATE},
-          status => {},
-          ({receivedBytes, totalBytes}) => {
-            const progress = Math.min((receivedBytes / totalBytes) * 100, 100);
-            const formattedProgress = progress.toFixed(2);
-            setCodePushProgress(parseInt(formattedProgress));
-          },
-        );
-      } else {
-        console.log('O aplicativo já está atualizado.');
-      }
-    } catch (error) {
-      console.log('Erro ao verificar atualizações:', error);
-    }
-  };
-
-  useEffect(() => {
-    checkAndInstallCodePush();
-    const appStateHandler = nextAppState => {
-      if (nextAppState === 'background') {
-        checkAndInstallCodePush();
-      }
-    };
-
-    const subscription = AppState.addEventListener('change', appStateHandler);
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
   return (
-    <ImageBackground source={bgImage} style={styles.container}>
-      {codePushProgress ? (
-        <SafeAreaView style={styles.safeArea}>
-          <View style={{padding: 20}}>
-            <Text style={{color: 'white', fontWeight: '600'}}>
-              CodePush update progress: {codePushProgress}%
-            </Text>
-          </View>
-        </SafeAreaView>
-      ) : null}
+    <>
+      <ImageBackground source={bgImage} style={styles.container}>
+        {/* <CodePushService /> */}
+        <Card
+          img={img1}
+          title="Nike Reverse Panda"
+          desc="Nike Air Dunk Jumbo"
+          price="999,99"
+        />
 
-      <Card
-        img={img1}
-        title="Nike Reverse Panda"
-        desc="Nike Air Dunk Jumbo"
-        price="999,99"
-      />
+        <Card
+          img={img2}
+          title="Short-Sleeve Top"
+          desc="Nike x Off-White™"
+          price="399,99"
+        />
 
-      <Card
-        img={img2}
-        title="Short-Sleeve Top"
-        desc="Nike x Off-White™"
-        price="399,99"
-      />
-
-      <Card
-        img={null}
-        title={'Championship Purple'}
-        desc={'Dunk Low'}
-        price={'00,00'}
-      />
-    </ImageBackground>
+        <Card
+          img={img3}
+          title={'Championship Purple'}
+          desc={'Dunk Low'}
+          price={'599,99'}
+        />
+      </ImageBackground>
+    </>
   );
 };
 
@@ -157,4 +122,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+let codePushOptions = { updateDialog: true, checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME, installMode: CodePush.InstallMode.IMMEDIATE };
+
+export default CodePush(codePushOptions)(App);

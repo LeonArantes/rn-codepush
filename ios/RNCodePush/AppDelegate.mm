@@ -88,8 +88,7 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
-  // return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"]; remove or comment this line
-  return [CodePush bundleURL]; // add this line
+  return [CodePush bundleURL];
 #endif
 }
 

@@ -13,7 +13,7 @@
     "appcenter-cli": "^2.14.0",
     "react": "18.0.0",
     "react-native": "0.69.12",
-    "react-native-code-push": "^8.1.1"
+    "react-native-code-push": "7.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
